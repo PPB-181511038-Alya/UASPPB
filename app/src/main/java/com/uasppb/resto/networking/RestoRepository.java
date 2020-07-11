@@ -28,9 +28,9 @@ public class RestoRepository {
         restoApi = RetrofitService.createService(RestoApi.class);
     }
 
-    public MutableLiveData<RestoResponse> getRestaurant(String sort){
+    public MutableLiveData<RestoResponse> getRestaurant(){
         final MutableLiveData<RestoResponse> restoData = new MutableLiveData<>();
-        restoApi.getRestaurants(sort).enqueue(new Callback<RestoResponse>() {
+        restoApi.getRestaurants().enqueue(new Callback<RestoResponse>() {
             @Override
             public void onResponse(Call<RestoResponse> call,
                                    Response<RestoResponse> response) {

@@ -16,7 +16,7 @@ public class RestoViewModel extends ViewModel {
             return;
         }
         restoRepository = RestoRepository.getInstance();
-        mutableLiveData = restoRepository.getRestaurant("rating");
+        mutableLiveData = restoRepository.getRestaurant();
 
     }
 

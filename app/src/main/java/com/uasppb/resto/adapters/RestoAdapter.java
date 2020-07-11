@@ -1,6 +1,7 @@
 package com.uasppb.resto.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.uasppb.resto.R;
 import com.uasppb.resto.model.RestoItem;
@@ -35,7 +37,34 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RestoAdapter.RestoViewHolder holder, int position) {
-        Picasso.get().load(restoItems.get(position).getRestaurant().getPhotosUrl()).into(holder.restoImage);
+//        Picasso.get().load(restoItems.get(position).getRestaurant().getFeaturedImage()).into(holder.restoImage);
+        String thumb = restoItems.get(position).getRestaurant().getFeaturedImage();
+
+        try {
+            if (!TextUtils.isEmpty(thumb))
+                Picasso.get().load(thumb)
+                        .fit()
+                        .centerCrop()
+                        .placeholder(R.drawable.ee_min)
+                        .into(holder.restoImage, new Callback() {
+                            @Override
+                            public void onSuccess() {
+//                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+//                                progressBar.setVisibility(View.GONE);
+
+                            }
+                        });
+            else {
+//                progressBar.setVisibility(View.GONE);
+                holder.restoImage.setImageDrawable(context.getDrawable(R.drawable.ee_min));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         holder.restoName.setText(restoItems.get(position).getRestaurant().getName());
         holder.restoPriceRange.setText(restoItems.get(position).getRestaurant().getPriceRange().toString());
         holder.restoCurrency.setText(restoItems.get(position).getRestaurant().getCurrency());

@@ -11,5 +11,5 @@ import retrofit2.http.Query;
 public interface RestoApi {
     @Headers("user-key: 53d890d323b2c6c8fd35f972c216c7c9")
     @GET("search")
-    Call<RestoResponse> getRestaurants(@Query("sort") String sort);
+    Call<RestoResponse> getRestaurants();
 }
