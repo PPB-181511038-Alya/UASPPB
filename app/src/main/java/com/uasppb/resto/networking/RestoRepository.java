@@ -36,6 +36,9 @@ public class RestoRepository {
                                    Response<RestoResponse> response) {
                 if (response.isSuccessful()){
                     restoData.setValue(response.body());
+                    Log.d("success fetch data","annyeong");
+                    Log.d("myTag", String.valueOf(response.body()));
+                    Log.d("myTag", String.valueOf(restoData));
                 }
             }
 

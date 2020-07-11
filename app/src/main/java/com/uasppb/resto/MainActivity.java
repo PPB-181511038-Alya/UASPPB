@@ -10,13 +10,14 @@ import android.os.Bundle;
 
 import com.uasppb.resto.adapters.RestoAdapter;
 import com.uasppb.resto.model.RestoItem;
+import com.uasppb.resto.model.RestoItem_;
 import com.uasppb.resto.viewmodels.RestoViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    ArrayList<RestoItem> arrayRestoItems = new ArrayList<>();
+    ArrayList<RestoItem_> arrayRestoItems = new ArrayList<>();
     RestoAdapter restoAdapter;
     RecyclerView rvResto;
     RestoViewModel restoViewModel;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         restoViewModel = ViewModelProviders.of(this).get(RestoViewModel.class);
         restoViewModel.init();
         restoViewModel.getRestoRepository().observe(this, restoResponse -> {
-            List<RestoItem> restoItems = restoResponse.getRestaurants();
+            List<RestoItem_> restoItems = restoResponse.getRestaurants();
             arrayRestoItems.addAll(restoItems);
             restoAdapter.notifyDataSetChanged();
         });

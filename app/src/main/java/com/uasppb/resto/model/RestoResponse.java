@@ -17,7 +17,7 @@ public class RestoResponse {
     private Integer resultsShown;
     @SerializedName("restaurants")
     @Expose
-    private List<RestoItem> restaurants = null;
+    private List<RestoItem_> restaurants = null;
 
     public Integer getResultsFound() {
         return resultsFound;
@@ -43,11 +43,11 @@ public class RestoResponse {
         this.resultsShown = resultsShown;
     }
 
-    public List<RestoItem> getRestaurants() {
+    public List<RestoItem_> getRestaurants() {
         return restaurants;
     }
 
-    public void setRestaurants(List<RestoItem> restaurants) {
+    public void setRestaurants(List<RestoItem_> restaurants) {
         this.restaurants = restaurants;
     }
 

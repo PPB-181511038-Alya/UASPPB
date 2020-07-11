@@ -13,14 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 import com.uasppb.resto.R;
 import com.uasppb.resto.model.RestoItem;
+import com.uasppb.resto.model.RestoItem_;
 
 import java.util.ArrayList;
 
 public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHolder>{
     Context context;
-    ArrayList<RestoItem> restoItems;
+    ArrayList<RestoItem_> restoItems;
 
-    public RestoAdapter(Context context, ArrayList<RestoItem> restoItems) {
+    public RestoAdapter(Context context, ArrayList<RestoItem_> restoItems) {
         this.context = context;
         this.restoItems = restoItems;
     }
@@ -34,12 +35,12 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RestoAdapter.RestoViewHolder holder, int position) {
-        Picasso.get().load(restoItems.get(position).getPhotosUrl()).into(holder.restoImage);
-        holder.restoName.setText(restoItems.get(position).getName());
-        holder.restoPriceRange.setText(restoItems.get(position).getPriceRange().toString());
-        holder.restoCurrency.setText(restoItems.get(position).getCurrency());
-        holder.restoRating.setText(restoItems.get(position).getUserRating().getAggregateRating().toString());
-        holder.restoOnlineOrder.setText(restoItems.get(position).getHasOnlineDelivery());
+        Picasso.get().load(restoItems.get(position).getRestaurant().getPhotosUrl()).into(holder.restoImage);
+        holder.restoName.setText(restoItems.get(position).getRestaurant().getName());
+        holder.restoPriceRange.setText(restoItems.get(position).getRestaurant().getPriceRange().toString());
+        holder.restoCurrency.setText(restoItems.get(position).getRestaurant().getCurrency());
+        holder.restoRating.setText(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating().toString());
+        holder.restoOnlineOrder.setText(restoItems.get(position).getRestaurant().getHasOnlineDelivery().toString());
 
     }
 
