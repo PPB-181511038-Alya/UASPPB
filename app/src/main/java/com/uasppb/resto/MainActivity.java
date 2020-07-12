@@ -6,10 +6,16 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Toast;
 
 import com.uasppb.resto.adapters.RestoAdapter;
-import com.uasppb.resto.model.RestoItem;
 import com.uasppb.resto.model.RestoItem_;
 import com.uasppb.resto.viewmodels.RestoViewModel;
 
@@ -27,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         rvResto = findViewById(R.id.recycler_view);
 
-
         restoViewModel = ViewModelProviders.of(this).get(RestoViewModel.class);
         restoViewModel.init();
         restoViewModel.getRestoRepository().observe(this, restoResponse -> {
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setupRecyclerView();
+
     }
 
     private void setupRecyclerView() {
@@ -50,4 +56,5 @@ public class MainActivity extends AppCompatActivity {
             restoAdapter.notifyDataSetChanged();
         }
     }
+
 }

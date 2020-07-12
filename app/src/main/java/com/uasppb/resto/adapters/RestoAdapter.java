@@ -1,19 +1,21 @@
 package com.uasppb.resto.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.uasppb.resto.R;
+import com.uasppb.resto.RestoDetailActivity;
 import com.uasppb.resto.model.RestoItem;
 import com.uasppb.resto.model.RestoItem_;
 
@@ -37,8 +39,8 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RestoAdapter.RestoViewHolder holder, int position) {
-//        Picasso.get().load(restoItems.get(position).getRestaurant().getFeaturedImage()).into(holder.restoImage);
-        String thumb = restoItems.get(position).getRestaurant().getFeaturedImage();
+        RestoItem restoItem = restoItems.get(position).getRestaurant();
+        String thumb = restoItem.getFeaturedImage();
 
         try {
             if (!TextUtils.isEmpty(thumb))
@@ -46,30 +48,28 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
                         .fit()
                         .centerCrop()
                         .placeholder(R.drawable.ee_min)
-                        .into(holder.restoImage, new Callback() {
-                            @Override
-                            public void onSuccess() {
-//                                progressBar.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-//                                progressBar.setVisibility(View.GONE);
-
-                            }
-                        });
+                        .into(holder.restoImage);
             else {
-//                progressBar.setVisibility(View.GONE);
                 holder.restoImage.setImageDrawable(context.getDrawable(R.drawable.ee_min));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        holder.restoName.setText(restoItems.get(position).getRestaurant().getName());
-        holder.restoPriceRange.setText(restoItems.get(position).getRestaurant().getPriceRange().toString());
-        holder.restoCurrency.setText(restoItems.get(position).getRestaurant().getCurrency());
-        holder.restoRating.setText(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating().toString());
-        holder.restoOnlineOrder.setText(restoItems.get(position).getRestaurant().getHasOnlineDelivery().toString());
+
+        holder.restoName.setText(restoItem.getName());
+        holder.restoPriceRange.setText(restoItem.getPriceRange().toString());
+        holder.restoCurrency.setText(restoItem.getCurrency());
+        holder.restoRating.setText(restoItem.getUserRating().getAggregateRating().toString());
+
+        if(restoItem.getHasOnlineDelivery()== 1){
+            holder.restoOnlineOrder.setText("Online");
+        }
+
+        holder.parentLayout.setOnClickListener((view)-> {
+            Intent intent = new Intent(context, RestoDetailActivity.class);
+            intent.putExtra("restoId", restoItem.getR().getRestoId());
+            context.startActivity(intent);
+        });
 
     }
 
@@ -81,11 +81,8 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
     public class RestoViewHolder extends RecyclerView.ViewHolder{
 
         ImageView restoImage;
-        TextView restoName;
-        TextView restoPriceRange;
-        TextView restoCurrency;
-        TextView restoRating;
-        TextView restoOnlineOrder;
+        TextView restoName, restoPriceRange, restoCurrency, restoRating, restoOnlineOrder;
+        LinearLayout parentLayout;
 
         public RestoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -96,6 +93,7 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
             restoCurrency = itemView.findViewById(R.id.resto_currency);
             restoRating = itemView.findViewById(R.id.resto_rating);
             restoOnlineOrder = itemView.findViewById(R.id.resto_online_order);
+            parentLayout = itemView.findViewById(R.id.resto_item);
 
         }
     }
