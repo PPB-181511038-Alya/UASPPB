@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -61,9 +63,11 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
         holder.restoCurrency.setText(restoItem.getCurrency());
         holder.restoRating.setText(restoItem.getUserRating().getAggregateRating().toString());
 
-        if(restoItem.getHasOnlineDelivery()== 1){
-            holder.restoOnlineOrder.setText("Online");
-        }
+        float ratingfloat = Float.valueOf(String.valueOf(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating()));
+        holder.ratingBar.setRating(ratingfloat);
+//        if(restoItem.getHasOnlineDelivery()== 1){
+//            holder.restoOnlineOrder.setText("Online");
+//        }
 
         holder.parentLayout.setOnClickListener((view)-> {
             Intent intent = new Intent(context, RestoDetailActivity.class);
@@ -82,17 +86,18 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
 
         ImageView restoImage;
         TextView restoName, restoPriceRange, restoCurrency, restoRating, restoOnlineOrder;
-        LinearLayout parentLayout;
+        RatingBar ratingBar;
+        RelativeLayout parentLayout;
 
         public RestoViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            ratingBar = itemView.findViewById(R.id.ratingbar);
             restoImage = itemView.findViewById(R.id.resto_image);
             restoName = itemView.findViewById(R.id.resto_name);
             restoPriceRange = itemView.findViewById(R.id.resto_range_price);
             restoCurrency = itemView.findViewById(R.id.resto_currency);
             restoRating = itemView.findViewById(R.id.resto_rating);
-            restoOnlineOrder = itemView.findViewById(R.id.resto_online_order);
+//            restoOnlineOrder = itemView.findViewById(R.id.resto_online_order);
             parentLayout = itemView.findViewById(R.id.resto_item);
 
         }

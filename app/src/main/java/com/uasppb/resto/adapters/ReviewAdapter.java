@@ -16,15 +16,16 @@ import com.uasppb.resto.R;
 import com.uasppb.resto.model.RestoItem;
 import com.uasppb.resto.model.RestoItem_;
 import com.uasppb.resto.model.Review;
+import com.uasppb.resto.model.Review_;
 import com.uasppb.resto.model.User_;
 
 import java.util.ArrayList;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
     Context context;
-    ArrayList<Review> reviews;
+    ArrayList<Review_> reviews;
 
-    public ReviewAdapter(Context context, ArrayList<Review> reviews) {
+    public ReviewAdapter(Context context, ArrayList<Review_> reviews) {
         this.context = context;
         this.reviews = reviews;
     }
@@ -32,13 +33,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     @NonNull
     @Override
     public ReviewAdapter.ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_rating_review, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.list_review, parent, false);
         return new ReviewAdapter.ReviewViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReviewAdapter.ReviewViewHolder holder, int position) {
-        Review review = reviews.get(position);
+        Review_ review = reviews.get(position);
         String thumb = review.getUser().getProfileImage();
 
         try {
@@ -58,7 +59,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.userName.setText(review.getUser().getName());
         holder.userRating.setText(review.getRating());
         holder.userReview.setText(review.getReviewText());
-        holder.userReviewTime.setText(review.getReviewTimeFriendly());
+//        holder.userReviewTime.setText(review.getReview().getReviewTimeFriendly());
 
     }
 
@@ -75,11 +76,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         public ReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            userImage = itemView.findViewById(R.id.user_image);
+            userImage = itemView.findViewById(R.id.resto_image);
             userName = itemView.findViewById(R.id.user_name);
             userRating = itemView.findViewById(R.id.user_rating);
-            userReview = itemView.findViewById(R.id.user_review_text);
-            userReviewTime = itemView.findViewById(R.id.user_review_time);
+            userReview = itemView.findViewById(R.id.review_desc);
+//            userReviewTime = itemView.findViewById(R.id.user_review_time);
 
         }
     }

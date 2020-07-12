@@ -12,7 +12,7 @@ public class Review_ {
         return review;
     }
 
-    public void setReview(Review restaurant) {
+    public void setReview(Review review) {
         this.review = review;
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.uasppb.resto.R;
 import com.uasppb.resto.model.RestoResponse;
+import com.uasppb.resto.model.ReviewResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,4 +52,29 @@ public class RestoRepository {
     );
         return restoData;
     }
+
+    public MutableLiveData<ReviewResponse> getReviews(int res_id){
+        final MutableLiveData<ReviewResponse> reviewData = new MutableLiveData<>();
+        restoApi.getReview(res_id).enqueue(new Callback<ReviewResponse>() {
+                                              @Override
+                                              public void onResponse(Call<ReviewResponse> call,
+                                                                     Response<ReviewResponse> response) {
+                                                  if (response.isSuccessful()){
+                                                      reviewData.setValue(response.body());
+                                                      Log.d("success fetch data","annyeong");
+                                                      Log.d("myTag", String.valueOf(response.body()));
+                                                      Log.d("myTag", String.valueOf(reviewData));
+                                                  }
+                                              }
+
+                                              @Override
+                                              public void onFailure(Call<ReviewResponse> call, Throwable t) {
+                                                  reviewData.setValue(null);
+                                                  Log.d("error fetch data",t.getMessage());
+                                              }
+                                          }
+        );
+        return reviewData;
+    }
+
 }

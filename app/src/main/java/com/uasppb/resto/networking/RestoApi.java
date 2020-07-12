@@ -4,6 +4,7 @@ import com.uasppb.resto.model.RestoItem;
 import com.uasppb.resto.model.RestoItem_;
 import com.uasppb.resto.model.RestoResponse;
 import com.uasppb.resto.model.Review;
+import com.uasppb.resto.model.ReviewResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,5 +21,5 @@ public interface RestoApi {
     Call<RestoItem> getRestaurant(@Query("res_id") int restoId);
     @Headers("user-key: 53d890d323b2c6c8fd35f972c216c7c9")
     @GET("reviews")
-    Call<Review> getReview(@Query("res_id") int restoId);
+    Call<ReviewResponse> getReview(@Query("res_id") int restoId);
 }

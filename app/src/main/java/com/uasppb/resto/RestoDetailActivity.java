@@ -13,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
+//import android.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,10 +33,14 @@ import com.uasppb.resto.adapters.ReviewAdapter;
 import com.uasppb.resto.model.RestoItem;
 import com.uasppb.resto.model.RestoItem_;
 import com.uasppb.resto.model.Review;
+import com.uasppb.resto.model.Review_;
 import com.uasppb.resto.networking.RestoApi;
 import com.uasppb.resto.networking.RetrofitService;
+import com.uasppb.resto.viewmodels.RestoViewModel;
+import com.uasppb.resto.viewmodels.ReviewViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,22 +52,12 @@ public class RestoDetailActivity extends AppCompatActivity {
 
     private static Retrofit retrofit = null;
     private Toolbar toolbar;
-    private TextView restoName;
-    private TextView restoRangePrice;
-    private TextView restoLoc;
-    private TextView restoCurrency;
-    private TextView restoLong;
-    private TextView restoLat;
+    private TextView restoName, restoRangePrice, restoLoc, restoCurrency, restoLong, restoLat, restoRating;
     private ImageView restoImage;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-    private ProgressBar progressBar;
-    private CoordinatorLayout coordinatorLayout;
     private RecyclerView rvReviews;
-    private AppBarLayout appBarLayout;
-    private String restoTitle, reviews;
-    private RestoApi restoApi;
     private ReviewAdapter reviewAdapter;
-    ArrayList<Review> arrayReviews = new ArrayList<>();
+    private ReviewViewModel reviewViewModel;
+    ArrayList<Review_> arrayReviews = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,73 +66,34 @@ public class RestoDetailActivity extends AppCompatActivity {
 
         //Find views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        restoImage = (ImageView) findViewById(R.id.resto_image_detail);
+        restoImage = (ImageView) findViewById(R.id.resto_image);
         restoName = (TextView) findViewById(R.id.resto_name);
         restoRangePrice = (TextView) findViewById(R.id.resto_range_price);
-        restoCurrency = (TextView) findViewById(R.id.resto_currency_detail);
-        restoLoc = (TextView) findViewById(R.id.resto_location);
+        restoCurrency = (TextView) findViewById(R.id.resto_currency);
+        restoLoc = (TextView) findViewById(R.id.address);
         restoLong = (TextView) findViewById(R.id.resto_long);
         restoLat = (TextView) findViewById(R.id.resto_lat);
+        restoRating = (TextView) findViewById(R.id.zomato_star);
 
-        appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        rvReviews = (RecyclerView) findViewById(R.id.rv_reviews);
 
-//        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        rvReviews.setHasFixedSize(true);
-        rvReviews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+//        rvReviews = (RecyclerView) findViewById(R.id.review_rv);
+//        List<RestoItem_> restoItems = restoResponse.getRestaurants();
+//        arrayRestoItems.addAll(restoItems);
 
         Intent iGet = getIntent();
         int restoId = iGet.getIntExtra("restoId", 0);
-//        Log.d("resid", restoId.toString());
         RetrofitService.createService(RestoApi.class).getRestaurant(restoId).enqueue(new Callback<RestoItem>() {
             @Override
             public void onResponse(Call<RestoItem> call, Response<RestoItem> response) {
                 final RestoItem restoItem_ = response.body();
                 Log.d("detail", response.body().toString());
-                restoTitle = restoItem_.getName();
-
-                if (actionBar != null) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setTitle(restoTitle);
-                }
-
-                appBarLayout.setExpanded(true);
-
-                // hiding & showing the title when toolbar expanded & collapsed
-                appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-                    boolean isShow = false;
-                    int scrollRange = -1;
-
-                    @Override
-                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                        if (scrollRange == -1) {
-                            scrollRange = appBarLayout.getTotalScrollRange();
-                        }
-                        if (scrollRange + verticalOffset == 0) {
-                            collapsingToolbarLayout.setTitle(restoTitle);
-                            isShow = true;
-                        } else if (isShow) {
-                            collapsingToolbarLayout.setTitle(restoTitle);
-                            isShow = false;
-                        }
-                    }
-                });
-                collapsingToolbarLayout.setTitle(restoTitle);
                 renderResto(restoItem_);
-                progressBar.setVisibility(View.GONE);
-                coordinatorLayout.setVisibility(View.VISIBLE);
+
             }
 
             @Override
             public void onFailure(Call<RestoItem> call, Throwable t) {
                 Log.e(TAG, t.toString());
-                progressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "Error loading!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -160,19 +117,27 @@ public class RestoDetailActivity extends AppCompatActivity {
         }
         String test = resto.getPriceRange().toString();
         Log.e("hello", test);
-//        restoName.setText(resto.getR().getRestoId());
-//        restoName.setText(thumb);
-//        restoName.setText(resto.getName());
-//        restoRangePrice.setText(resto.getPriceRange().toString());
-//        restoLoc.setText(resto.getLocation().getAddress());
-//        restoLong.setText(resto.getLocation().getLongitude());
-//        restoLat.setText(resto.getLocation().getLatitude());
+        restoName.setText(resto.getName());
+        restoRangePrice.setText(resto.getPriceRange().toString());
+        restoCurrency.setText(resto.getCurrency());
+        restoLoc.setText(resto.getLocation().getAddress());
+        restoLong.setText(resto.getLocation().getLongitude());
+        restoLat.setText(resto.getLocation().getLatitude());
 
-        setupRecyclerView();
+        reviewViewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
+        reviewViewModel.init(resto.getId());
+        reviewViewModel.getReviewRepository().observe(this, reviewResponse -> {
+            List<Review_> reviews = reviewResponse.getUserReviews();
+            arrayReviews.addAll(reviews);
+            Log.e("test", arrayReviews.toString());
+//            reviewAdapter.notifyDataSetChanged();
+        });
 
+//        setupRecyclerView();
     }
 
     private void setupRecyclerView() {
+
         if (reviewAdapter == null) {
             reviewAdapter = new ReviewAdapter(this, arrayReviews);
             rvReviews.setLayoutManager(new LinearLayoutManager(this));
@@ -200,7 +165,7 @@ public class RestoDetailActivity extends AppCompatActivity {
 //                String formattedString = android.text.Html.fromHtml(overview).toString();
                 Intent share = new Intent();
                 share.setAction(Intent.ACTION_SEND);
-                share.putExtra(Intent.EXTRA_TITLE, restoTitle);
+//                share.putExtra(Intent.EXTRA_TITLE, restoTitle);
                 share.putExtra(Intent.EXTRA_PACKAGE_NAME, getPackageName());
 //                share.putExtra(Intent.EXTRA_TEXT, formattedString);
                 share.setType("text/plain");
