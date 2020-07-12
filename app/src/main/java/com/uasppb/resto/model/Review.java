@@ -114,5 +114,20 @@ public class Review {
     public void setCommentsCount(String commentsCount) {
         this.commentsCount = commentsCount;
     }
+    @Override
+    public String toString() {
+        return "Review{" +
+                "rating=" + rating +
+                ", reviewText=" + reviewText +
+                ", location=" + id +
+                ", ratingColor=" + ratingColor +
+                ", reviewTimeFriendly=" + reviewTimeFriendly +
+                ", ratingText=" + ratingText +
+                ", timestamp=" + timestamp +
+                ", likes=" + likes +
+                ", user=" + user +
+                ", commentsCount=" + commentsCount +
+                '}';
+    }
 
 }

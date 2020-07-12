@@ -96,6 +96,7 @@ public class RestoItem {
     @SerializedName("events_url")
     @Expose
     private String eventsUrl;
+
     @SerializedName("establishment_types")
     @Expose
     private List<Object> establishmentTypes = null;

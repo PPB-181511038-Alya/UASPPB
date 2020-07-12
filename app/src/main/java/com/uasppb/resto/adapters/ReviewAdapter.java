@@ -39,7 +39,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public void onBindViewHolder(@NonNull ReviewAdapter.ReviewViewHolder holder, int position) {
-        Review_ review = reviews.get(position);
+        Review review = reviews.get(position).getReview();
         String thumb = review.getUser().getProfileImage();
 
         try {

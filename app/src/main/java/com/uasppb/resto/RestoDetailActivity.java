@@ -76,7 +76,7 @@ public class RestoDetailActivity extends AppCompatActivity {
         restoRating = (TextView) findViewById(R.id.zomato_star);
 
 
-//        rvReviews = (RecyclerView) findViewById(R.id.review_rv);
+        rvReviews = (RecyclerView) findViewById(R.id.review_rv);
 //        List<RestoItem_> restoItems = restoResponse.getRestaurants();
 //        arrayRestoItems.addAll(restoItems);
 
@@ -130,10 +130,10 @@ public class RestoDetailActivity extends AppCompatActivity {
             List<Review_> reviews = reviewResponse.getUserReviews();
             arrayReviews.addAll(reviews);
             Log.e("test", arrayReviews.toString());
-//            reviewAdapter.notifyDataSetChanged();
+            reviewAdapter.notifyDataSetChanged();
         });
 
-//        setupRecyclerView();
+        setupRecyclerView();
     }
 
     private void setupRecyclerView() {
@@ -142,8 +142,8 @@ public class RestoDetailActivity extends AppCompatActivity {
             reviewAdapter = new ReviewAdapter(this, arrayReviews);
             rvReviews.setLayoutManager(new LinearLayoutManager(this));
             rvReviews.setAdapter(reviewAdapter);
-            rvReviews.setItemAnimator(new DefaultItemAnimator());
-            rvReviews.setNestedScrollingEnabled(true);
+//            rvReviews.setItemAnimator(new DefaultItemAnimator());
+//            rvReviews.setNestedScrollingEnabled(true);
         } else {
             reviewAdapter.notifyDataSetChanged();
         }
