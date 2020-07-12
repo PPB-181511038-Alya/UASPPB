@@ -52,7 +52,7 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
                 Picasso.get().load(thumb)
                         .fit()
                         .centerCrop()
-                        .placeholder(R.drawable.ee_min)
+                        .placeholder(R.drawable.noimage)
                         .into(holder.restoImage, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -67,7 +67,7 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
                         });
             else {
 //                progressBar.setVisibility(View.GONE);
-                holder.restoImage.setImageDrawable(context.getDrawable(R.drawable.ee_min));
+                holder.restoImage.setImageDrawable(context.getDrawable(R.drawable.noimage));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,8 +78,13 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
         holder.restoRating.setText(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating().toString());
         float ratingfloat = Float.valueOf(String.valueOf(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating()));
         holder.ratingBar.setRating(ratingfloat);
+        Integer onlineChecker = restoItems.get(position).getRestaurant().getHasOnlineDelivery();
+        if(onlineChecker.equals(1)) {
+            holder.onlineBadge.setImageDrawable(context.getDrawable(R.drawable.badge));
+//            holder.restoOnlineOrder.setText(restoItems.get(position).getRestaurant().getHasOnlineDelivery().toString());
+        }
 
-//        holder.restoOnlineOrder.setText(restoItems.get(position).getRestaurant().getHasOnlineDelivery().toString());
+
 
     }
 
@@ -91,6 +96,7 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
     public class RestoViewHolder extends RecyclerView.ViewHolder{
 
         ImageView restoImage;
+        ImageView onlineBadge;
         TextView restoName;
         TextView restoPriceRange;
         TextView restoCurrency;
@@ -107,7 +113,7 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
             restoPriceRange = itemView.findViewById(R.id.resto_range_price);
             restoCurrency = itemView.findViewById(R.id.resto_currency);
             restoRating = itemView.findViewById(R.id.resto_rating);
-
+            onlineBadge = itemView.findViewById(R.id.badge);
 //            restoOnlineOrder = itemView.findViewById(R.id.resto_online_order);
 
         }
