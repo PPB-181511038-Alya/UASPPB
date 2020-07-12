@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.uasppb.resto.R;
 import com.uasppb.resto.RestoDetailActivity;
@@ -49,10 +50,10 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
                 Picasso.get().load(thumb)
                         .fit()
                         .centerCrop()
-                        .placeholder(R.drawable.ee_min)
+                        .placeholder(R.drawable.noimage)
                         .into(holder.restoImage);
             else {
-                holder.restoImage.setImageDrawable(context.getDrawable(R.drawable.ee_min));
+                holder.restoImage.setImageDrawable(context.getDrawable(R.drawable.noimage));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,9 +63,17 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
         holder.restoPriceRange.setText(restoItem.getPriceRange().toString());
         holder.restoCurrency.setText(restoItem.getCurrency());
         holder.restoRating.setText(restoItem.getUserRating().getAggregateRating().toString());
-
-        float ratingfloat = Float.valueOf(String.valueOf(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating()));
+        float ratingfloat = Float.parseFloat(holder.restoRating.getText().toString());
         holder.ratingBar.setRating(ratingfloat);
+        Integer onlineChecker = restoItems.get(position).getRestaurant().getHasOnlineDelivery();
+        if(onlineChecker.equals(1)) {
+              holder.onlineBadge.setImageDrawable(context.getDrawable(R.drawable.badge));
+//          holder.restoOnlineOrder.setText(restoItems.get(position).getRestaurant().getHasOnlineDelivery().toString());
+        }
+//
+//
+//        float ratingfloat = Float.valueOf(String.valueOf(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating()));
+//        holder.ratingBar.setRating(ratingfloat);
 //        if(restoItem.getHasOnlineDelivery()== 1){
 //            holder.restoOnlineOrder.setText("Online");
 //        }
@@ -84,8 +93,8 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
 
     public class RestoViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView restoImage;
-        TextView restoName, restoPriceRange, restoCurrency, restoRating, restoOnlineOrder;
+        ImageView restoImage, onlineBadge;
+        TextView restoName, restoPriceRange, restoCurrency, restoRating;
         RatingBar ratingBar;
         RelativeLayout parentLayout;
 
@@ -97,9 +106,9 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
             restoPriceRange = itemView.findViewById(R.id.resto_range_price);
             restoCurrency = itemView.findViewById(R.id.resto_currency);
             restoRating = itemView.findViewById(R.id.resto_rating);
+            onlineBadge = itemView.findViewById(R.id.badge);
 //            restoOnlineOrder = itemView.findViewById(R.id.resto_online_order);
             parentLayout = itemView.findViewById(R.id.resto_item);
-
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.uasppb.resto;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,17 +10,25 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 //import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,6 +48,14 @@ import com.uasppb.resto.networking.RetrofitService;
 import com.uasppb.resto.viewmodels.RestoViewModel;
 import com.uasppb.resto.viewmodels.ReviewViewModel;
 
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,31 +67,47 @@ import retrofit2.Retrofit;
 public class RestoDetailActivity extends AppCompatActivity {
     private final static String TAG = RestoDetailActivity.class.getSimpleName();
 
+    private Context ctx;
     private static Retrofit retrofit = null;
     private Toolbar toolbar;
-    private TextView restoName, restoRangePrice, restoLoc, restoCurrency, restoLong, restoLat, restoRating;
-    private ImageView restoImage;
+    private MapView map = null;
+    private TextView restoName, restoRangePrice, restoLoc, restoCurrency, restoRating, restoLong, restoLat;
+    private ImageView restoImage, restoOnlineOrder;
+    private RatingBar ratingBar;
     private RecyclerView rvReviews;
     private ReviewAdapter reviewAdapter;
     private ReviewViewModel reviewViewModel;
+    float rating;
+    double Long, Lat;
+    Boolean isScrolling = false;
+    ImageButton btn;
     ArrayList<Review_> arrayReviews = new ArrayList<>();
+    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resto_detail);
 
+        ctx = this.getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+
         //Find views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        btn = (ImageButton) findViewById(R.id.back);
+        map = findViewById(R.id.mapview);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.getController().setZoom(18.0);
         restoImage = (ImageView) findViewById(R.id.resto_image);
+        restoOnlineOrder = (ImageView) findViewById(R.id.resto_flag);
         restoName = (TextView) findViewById(R.id.resto_name);
         restoRangePrice = (TextView) findViewById(R.id.resto_range_price);
         restoCurrency = (TextView) findViewById(R.id.resto_currency);
         restoLoc = (TextView) findViewById(R.id.address);
         restoLong = (TextView) findViewById(R.id.resto_long);
         restoLat = (TextView) findViewById(R.id.resto_lat);
-        restoRating = (TextView) findViewById(R.id.zomato_star);
-
+        ratingBar = (RatingBar) findViewById(R.id.ratingbar);
+        restoRating = (TextView) findViewById(R.id.resto_rating);
 
         rvReviews = (RecyclerView) findViewById(R.id.review_rv);
 //        List<RestoItem_> restoItems = restoResponse.getRestaurants();
@@ -88,7 +121,6 @@ public class RestoDetailActivity extends AppCompatActivity {
                 final RestoItem restoItem_ = response.body();
                 Log.d("detail", response.body().toString());
                 renderResto(restoItem_);
-
             }
 
             @Override
@@ -99,6 +131,41 @@ public class RestoDetailActivity extends AppCompatActivity {
         });
     }
 
+    public void back (View v) {
+        Intent i = new Intent(RestoDetailActivity.this, MainActivity.class);
+        startActivity(i);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (int i = 0; i < grantResults.length; i++) {
+            permissionsToRequest.add(permissions[i]);
+        }
+        if (permissionsToRequest.size() > 0) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionsToRequest.toArray(new String[0]),
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    private void requestPermissionsIfNecessary(String[] permissions) {
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
+            }
+        }
+        if (permissionsToRequest.size() > 0) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionsToRequest.toArray(new String[0]),
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
     public void renderResto(RestoItem resto) {
         String thumb = resto.getFeaturedImage();
 
@@ -107,10 +174,10 @@ public class RestoDetailActivity extends AppCompatActivity {
                 Picasso.get().load(thumb)
                         .fit()
                         .centerCrop()
-                        .placeholder(R.drawable.ee_min)
+                        .placeholder(R.drawable.noimage)
                         .into(restoImage);
             else {
-                restoImage.setImageDrawable(this.getDrawable(R.drawable.ee_min));
+                restoImage.setImageDrawable(this.getDrawable(R.drawable.noimage));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,6 +190,31 @@ public class RestoDetailActivity extends AppCompatActivity {
         restoLoc.setText(resto.getLocation().getAddress());
         restoLong.setText(resto.getLocation().getLongitude());
         restoLat.setText(resto.getLocation().getLatitude());
+        restoRating.setText(resto.getUserRating().getAggregateRating().toString());
+        rating = Float.parseFloat(restoRating.getText().toString());
+        ratingBar.setRating(rating);
+        Integer onlineChecker = resto.getHasOnlineDelivery();
+        if(onlineChecker.equals(1)) {
+            restoOnlineOrder.setImageDrawable(this.getDrawable(R.drawable.badge));
+        }
+        Long = Double.parseDouble(restoLong.getText().toString());
+        Lat = Double.parseDouble(restoLat.getText().toString());
+
+        //Show maps
+        requestPermissionsIfNecessary(new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.INTERNET
+        });
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
+        map.setMultiTouchControls(true);
+
+        CompassOverlay compassOverlay = new CompassOverlay(this, map);
+        compassOverlay.enableCompass();
+        map.getOverlays().add(compassOverlay);
+
+        GeoPoint point = new GeoPoint(Lat, Long);
+        addMarker(point);
+
+        map.getController().setCenter(point);
 
         reviewViewModel = ViewModelProviders.of(this).get(ReviewViewModel.class);
         reviewViewModel.init(resto.getId());
@@ -136,6 +228,16 @@ public class RestoDetailActivity extends AppCompatActivity {
         setupRecyclerView();
     }
 
+    public void addMarker(GeoPoint point){
+        Marker startMarker = new Marker(map);
+        startMarker.setPosition(point);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+        startMarker.setIcon(getResources().getDrawable(R.drawable.ic_marker));
+//        map.getOverlays().clear();
+        map.getOverlays().add(startMarker);
+//        map.invalidate();
+    }
+
     private void setupRecyclerView() {
 
         if (reviewAdapter == null) {
@@ -144,6 +246,15 @@ public class RestoDetailActivity extends AppCompatActivity {
             rvReviews.setAdapter(reviewAdapter);
 //            rvReviews.setItemAnimator(new DefaultItemAnimator());
 //            rvReviews.setNestedScrollingEnabled(true);
+            rvReviews.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                        isScrolling = true;
+                    }
+                }
+            });
         } else {
             reviewAdapter.notifyDataSetChanged();
         }

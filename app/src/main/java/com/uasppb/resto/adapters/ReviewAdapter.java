@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,10 +48,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
                 Picasso.get().load(thumb)
                         .fit()
                         .centerCrop()
-                        .placeholder(R.drawable.ee_min)
+                        .placeholder(R.drawable.noimage)
                         .into(holder.userImage);
             else {
-                holder.userImage.setImageDrawable(context.getDrawable(R.drawable.ee_min));
+                holder.userImage.setImageDrawable(context.getDrawable(R.drawable.noimage));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,8 +60,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         holder.userName.setText(review.getUser().getName());
         holder.userRating.setText(review.getRating());
         holder.userReview.setText(review.getReviewText());
-//        holder.userReviewTime.setText(review.getReview().getReviewTimeFriendly());
-
+        float ratingfloat = Float.parseFloat(holder.userRating.getText().toString());
+        holder.ratingBar.setRating(ratingfloat);
     }
 
     @Override
@@ -71,13 +72,15 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     public class ReviewViewHolder extends RecyclerView.ViewHolder{
 
         ImageView userImage;
+        RatingBar ratingBar;
         TextView userName, userRating, userReview, userReviewTime;
 
         public ReviewViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            userImage = itemView.findViewById(R.id.resto_image);
+            userImage = itemView.findViewById(R.id.review_image);
             userName = itemView.findViewById(R.id.user_name);
+            ratingBar = itemView.findViewById(R.id.ratingbar);
             userRating = itemView.findViewById(R.id.user_rating);
             userReview = itemView.findViewById(R.id.review_desc);
 //            userReviewTime = itemView.findViewById(R.id.user_review_time);
