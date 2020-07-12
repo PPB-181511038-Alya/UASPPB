@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.RatingBar;
 
 import com.uasppb.resto.adapters.RestoAdapter;
 import com.uasppb.resto.model.RestoItem;

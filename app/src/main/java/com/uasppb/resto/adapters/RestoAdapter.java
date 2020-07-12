@@ -5,7 +5,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,13 +28,18 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
     public RestoAdapter(Context context, ArrayList<RestoItem_> restoItems) {
         this.context = context;
         this.restoItems = restoItems;
+
     }
+
 
     @NonNull
     @Override
     public RestoAdapter.RestoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(context).inflate(R.layout.list_resto_item, parent, false);
         return new  RestoViewHolder(view);
+
+
     }
 
     @Override
@@ -69,7 +76,10 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
         holder.restoPriceRange.setText(restoItems.get(position).getRestaurant().getPriceRange().toString());
         holder.restoCurrency.setText(restoItems.get(position).getRestaurant().getCurrency());
         holder.restoRating.setText(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating().toString());
-        holder.restoOnlineOrder.setText(restoItems.get(position).getRestaurant().getHasOnlineDelivery().toString());
+        float ratingfloat = Float.valueOf(String.valueOf(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating()));
+        holder.ratingBar.setRating(ratingfloat);
+
+//        holder.restoOnlineOrder.setText(restoItems.get(position).getRestaurant().getHasOnlineDelivery().toString());
 
     }
 
@@ -86,17 +96,21 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
         TextView restoCurrency;
         TextView restoRating;
         TextView restoOnlineOrder;
+        RatingBar ratingBar;
+
 
         public RestoViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            ratingBar = itemView.findViewById(R.id.ratingbar);
             restoImage = itemView.findViewById(R.id.resto_image);
             restoName = itemView.findViewById(R.id.resto_name);
             restoPriceRange = itemView.findViewById(R.id.resto_range_price);
             restoCurrency = itemView.findViewById(R.id.resto_currency);
             restoRating = itemView.findViewById(R.id.resto_rating);
-            restoOnlineOrder = itemView.findViewById(R.id.resto_online_order);
+
+//            restoOnlineOrder = itemView.findViewById(R.id.resto_online_order);
 
         }
+
     }
 }
