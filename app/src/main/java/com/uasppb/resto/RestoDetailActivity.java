@@ -77,6 +77,7 @@ public class RestoDetailActivity extends AppCompatActivity {
     private RecyclerView rvReviews;
     private ReviewAdapter reviewAdapter;
     private ReviewViewModel reviewViewModel;
+    private CoordinatorLayout coordinatorLayout;
     float rating;
     double Long, Lat;
     Boolean isScrolling = false;
@@ -94,7 +95,7 @@ public class RestoDetailActivity extends AppCompatActivity {
 
         //Find views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        btn = (ImageButton) findViewById(R.id.back);
+//        btn = (ImageButton) findViewById(R.id.back);
         map = findViewById(R.id.mapview);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.getController().setZoom(18.0);
@@ -113,6 +114,8 @@ public class RestoDetailActivity extends AppCompatActivity {
 //        List<RestoItem_> restoItems = restoResponse.getRestaurants();
 //        arrayRestoItems.addAll(restoItems);
 
+//        setSupportActionBar(toolbar);
+//        final androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
         Intent iGet = getIntent();
         int restoId = iGet.getIntExtra("restoId", 0);
         RetrofitService.createService(RestoApi.class).getRestaurant(restoId).enqueue(new Callback<RestoItem>() {
@@ -132,8 +135,7 @@ public class RestoDetailActivity extends AppCompatActivity {
     }
 
     public void back (View v) {
-        Intent i = new Intent(RestoDetailActivity.this, MainActivity.class);
-        startActivity(i);
+        finish();
     }
 
     @Override
@@ -242,19 +244,21 @@ public class RestoDetailActivity extends AppCompatActivity {
 
         if (reviewAdapter == null) {
             reviewAdapter = new ReviewAdapter(this, arrayReviews);
-            rvReviews.setLayoutManager(new LinearLayoutManager(this));
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            layoutManager.setAutoMeasureEnabled(true);
+            rvReviews.setLayoutManager(layoutManager);
             rvReviews.setAdapter(reviewAdapter);
 //            rvReviews.setItemAnimator(new DefaultItemAnimator());
 //            rvReviews.setNestedScrollingEnabled(true);
-            rvReviews.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                        isScrolling = true;
-                    }
-                }
-            });
+//            rvReviews.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//                @Override
+//                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                    super.onScrollStateChanged(recyclerView, newState);
+//                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+//                        isScrolling = true;
+//                    }
+//                }
+//            });
         } else {
             reviewAdapter.notifyDataSetChanged();
         }

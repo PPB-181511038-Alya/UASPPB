@@ -22,9 +22,9 @@
         android:id="@+id/badge"
         android:layout_width="50dp"
         android:layout_height="60dp"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/resto_image"
         android:layout_marginStart="120dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="0dp" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/resto_online_order"-->
