@@ -68,15 +68,7 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
         Integer onlineChecker = restoItems.get(position).getRestaurant().getHasOnlineDelivery();
         if(onlineChecker.equals(1)) {
               holder.onlineBadge.setImageDrawable(context.getDrawable(R.drawable.badge));
-//          holder.restoOnlineOrder.setText(restoItems.get(position).getRestaurant().getHasOnlineDelivery().toString());
         }
-//
-//
-//        float ratingfloat = Float.valueOf(String.valueOf(restoItems.get(position).getRestaurant().getUserRating().getAggregateRating()));
-//        holder.ratingBar.setRating(ratingfloat);
-//        if(restoItem.getHasOnlineDelivery()== 1){
-//            holder.restoOnlineOrder.setText("Online");
-//        }
 
         holder.parentLayout.setOnClickListener((view)-> {
             Intent intent = new Intent(context, RestoDetailActivity.class);
@@ -107,7 +99,6 @@ public class RestoAdapter extends RecyclerView.Adapter<RestoAdapter.RestoViewHol
             restoCurrency = itemView.findViewById(R.id.resto_currency);
             restoRating = itemView.findViewById(R.id.resto_rating);
             onlineBadge = itemView.findViewById(R.id.badge);
-//            restoOnlineOrder = itemView.findViewById(R.id.resto_online_order);
             parentLayout = itemView.findViewById(R.id.resto_item);
         }
     }

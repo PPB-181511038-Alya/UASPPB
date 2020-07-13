@@ -93,9 +93,7 @@ public class RestoDetailActivity extends AppCompatActivity {
         ctx = this.getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        //Find views
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        btn = (ImageButton) findViewById(R.id.back);
         map = findViewById(R.id.mapview);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.getController().setZoom(18.0);
@@ -111,11 +109,7 @@ public class RestoDetailActivity extends AppCompatActivity {
         restoRating = (TextView) findViewById(R.id.resto_rating);
 
         rvReviews = (RecyclerView) findViewById(R.id.review_rv);
-//        List<RestoItem_> restoItems = restoResponse.getRestaurants();
-//        arrayRestoItems.addAll(restoItems);
 
-//        setSupportActionBar(toolbar);
-//        final androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
         Intent iGet = getIntent();
         int restoId = iGet.getIntExtra("restoId", 0);
         RetrofitService.createService(RestoApi.class).getRestaurant(restoId).enqueue(new Callback<RestoItem>() {
@@ -235,9 +229,7 @@ public class RestoDetailActivity extends AppCompatActivity {
         startMarker.setPosition(point);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
         startMarker.setIcon(getResources().getDrawable(R.drawable.ic_marker));
-//        map.getOverlays().clear();
         map.getOverlays().add(startMarker);
-//        map.invalidate();
     }
 
     private void setupRecyclerView() {
@@ -248,17 +240,6 @@ public class RestoDetailActivity extends AppCompatActivity {
             layoutManager.setAutoMeasureEnabled(true);
             rvReviews.setLayoutManager(layoutManager);
             rvReviews.setAdapter(reviewAdapter);
-//            rvReviews.setItemAnimator(new DefaultItemAnimator());
-//            rvReviews.setNestedScrollingEnabled(true);
-//            rvReviews.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//                @Override
-//                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                    super.onScrollStateChanged(recyclerView, newState);
-//                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-//                        isScrolling = true;
-//                    }
-//                }
-//            });
         } else {
             reviewAdapter.notifyDataSetChanged();
         }
@@ -277,12 +258,9 @@ public class RestoDetailActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.menu_share:
-//                String formattedString = android.text.Html.fromHtml(overview).toString();
                 Intent share = new Intent();
                 share.setAction(Intent.ACTION_SEND);
-//                share.putExtra(Intent.EXTRA_TITLE, restoTitle);
                 share.putExtra(Intent.EXTRA_PACKAGE_NAME, getPackageName());
-//                share.putExtra(Intent.EXTRA_TEXT, formattedString);
                 share.setType("text/plain");
                 startActivity(share);
                 break;

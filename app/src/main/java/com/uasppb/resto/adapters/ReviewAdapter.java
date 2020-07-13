@@ -83,7 +83,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             ratingBar = itemView.findViewById(R.id.ratingbar);
             userRating = itemView.findViewById(R.id.user_rating);
             userReview = itemView.findViewById(R.id.review_desc);
-//            userReviewTime = itemView.findViewById(R.id.user_review_time);
 
         }
     }
